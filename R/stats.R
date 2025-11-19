@@ -88,3 +88,8 @@ S7::method(print, Counter) <- function(x, ...) {
 S7::method(value, Counter) <- function(stat, n = 1L, ...) {
   tail(stat@state$values, n = n)
 }
+
+#' @export
+S7::method(n, Counter) <- function(stat, ...) {
+  stat@state$n
+}
