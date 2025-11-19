@@ -208,6 +208,16 @@ value <- S7::new_generic("value", "stat", function(stat, n = 1L, ...) {
 })
 
 
+#' The number of data points processed so far
+#' 
+#' @param stat A Stat object
+#' @return Integer count of data points processed
+#' @export
+n <- S7::new_generic("n", "stat", function(stat, ...) {
+  S7::S7_dispatch()
+})
+
+
 #' Sequential Test Abstract Base Class
 #'
 #' @description

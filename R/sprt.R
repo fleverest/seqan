@@ -193,3 +193,8 @@ S7::method(value, SPRT) <- function(stat, n = 1L, ...) {
   }
   tail(stat@state$llr_history, n = n)
 }
+
+#' @export
+S7::method(n, SPRT) <- function(stat, ...) {
+  stat@state$n
+}
