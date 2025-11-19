@@ -34,22 +34,22 @@ Counter <- S7::new_class("Counter",
 S7::method(update, Counter) <- function(stat, new_x = NULL, ...) {
   # If no new_x provided, fetch from stream
   if (is.null(new_x)) {
-    if (is.null(object@stream)) {
+    if (is.null(stat@stream)) {
       stop("You must provide `new_x` when no stream is available.")
     }
-    new_x <- fetch(object@stream)
+    new_x <- fetch(stat@stream)
   }
 
   new_len <- length(new_x)
 
   # Update statistics
-  object@state$values <- c(
-    object@state$values,
-    object@state$n + seq_len(new_len)
+  stat@state$values <- c(
+    stat@state$values,
+    stat@state$n + seq_len(new_len)
   )
-  object@state$n <- object@state$n + new_len
+  stat@state$n <- stat@state$n + new_len
   
-  invisible(object)
+  invisible(stat)
 }
 
 #' @export
