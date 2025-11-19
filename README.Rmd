@@ -1,0 +1,107 @@
+---
+output: github_document
+---
+
+```{r rmd-setup, include = FALSE}
+library(seqan)
+```
+
+# seqan
+
+Tools for online sequential analysis in R.
+
+## Installation
+
+```{r, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("fleverest/seqan")
+```
+
+## Demos and examples
+
+### Using a local vector as a data source
+
+```{r}
+x <- c(4, 2, 1, 5, 3)
+src <- VectorSource(x)
+
+get_n(src, 1, 3)
+get_rest(src, 3)
+get_length(src)
+
+# Peek inside.
+str(src)
+```
+
+### Using a stream
+
+```{r}
+stream <- Stream(source = src, transform_record = function(x) x + 1)
+
+stream
+as.list(stream@state)
+
+fetch(stream)
+fetch(stream)
+
+x <- c(x, c(8, 5))
+
+fetch(stream)
+
+stream
+as.list(stream@state)
+```
+
+### Using a simple statistic, with no data source
+
+```{r}
+counter <- Counter()
+
+counter
+value(counter)
+
+update(counter, new_x = c(2, 1, 7))
+
+counter
+value(counter)  # current value
+value(counter, Inf)  # history of all values
+
+update(counter, new_x = c(-1, 5, 3))
+value(counter)
+value(counter, Inf)
+
+is_stopped(counter)  # always FALSE, since no stopping rule
+
+reset(counter)
+value(counter)
+value(counter, Inf)
+
+update(counter, new_x = c(1, 3, 2))
+value(counter)
+value(counter, Inf)
+
+# Peek inside...
+str(counter)
+as.list(counter@state)
+```
+
+### Using a simple statistic, with a local data source
+
+```{r}
+reset(stream)
+
+counter2 <- Counter(stream)
+
+counter2
+
+update(counter2)
+
+counter2
+value(counter2)
+
+x <- c(x, c(8, 9))
+update(counter2)
+
+counter2
+value(counter2)
+```
