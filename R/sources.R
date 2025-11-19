@@ -3,7 +3,8 @@
 #' @param x The variable name or vector containing the data.
 #' @param env The environment containing the variable.
 #' @return A VectorSource object.
-#' @example
+#' 
+#' @examples
 #' 
 #' x <- c(1, 2, 3, 4, 5)
 #' src <- VectorSource(x)
