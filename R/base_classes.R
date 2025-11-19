@@ -176,15 +176,7 @@ Stat <- S7::new_class("Stat",
     description = S7::class_character,
     state = S7::class_environment
   ),
-  abstract = TRUE,
-  constructor = function(stream = NULL, description = "Sequential Statistic") {
-    S7::new_object(
-      S7::S7_object(),
-      stream = stream,
-      description = description,
-      state = new.env(parent = emptyenv())
-    )
-  }
+  abstract = TRUE
 )
 
 #' Update a Stat with new data
@@ -212,5 +204,41 @@ is_stopped <- S7::new_generic("is_stopped", "stat")
 #' @return The value(s) taken by the statistic
 #' @export
 value <- S7::new_generic("value", "stat", function(stat, n = 1L, ...) {
+  S7::S7_dispatch()
+})
+
+
+#' Sequential Test Abstract Base Class
+#'
+#' @description
+#' Abstract base class for sequential hypothesis tests. A Test extends Stat
+#' with decisions. A decision indicates whether to continue sampling, reject
+#' the null hypothesis, or accept the null hypothesis.
+#'
+#' @details
+#' A Test provides additional generics and attributes specific to hypothesis
+#' testing, including:
+#' - `decision(test)`: Returns the current decision ("Continue", "Reject", "Accept")
+#' - Test-specific stopping rules based on evidence accumulation
+#'
+#' Common test attributes:
+#' - alpha: Type I error rate
+#' - beta: Type II error rate
+#'
+#' @name Test
+#' @export
+Test <- S7::new_class("Test",
+  parent = Stat,
+  abstract = TRUE
+)
+
+#' Get the current test decision
+#'
+#' @param test A Test object
+#' @return Character string indicating the current decision: 
+#'   "Continue" (insufficient evidence), "Reject" (reject the null hypothesis), 
+#'   or "Accept" (accept the null hypothesis)
+#' @export
+decision <- S7::new_generic("decision", "test", function(test, ...) {
   S7::S7_dispatch()
 })
