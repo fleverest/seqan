@@ -31,7 +31,7 @@ Counter <- S7::new_class("Counter",
 )
 
 #' @export
-S7::method(update, Counter) <- function(stat, new_x = NULL, ...) {
+S7::method(update, Counter) <- function(object, new_x = NULL, ...) {
   # If no new_x provided, fetch from stream
   if (is.null(new_x)) {
     if (is.null(object@stream)) {
