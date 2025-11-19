@@ -45,7 +45,7 @@ str(src)
     ##  @ x          : chr "x"
     ##  @ env        :<environment: 0x56095da1e200>
 
-## Using a stream.
+### Using a stream
 
 ``` r
 stream <- Stream(source = src, transform_record = function(x) x + 1)
@@ -107,7 +107,7 @@ as.list(stream@state)
     ## $current_idx
     ## [1] 8
 
-## Using a simple statistic, with no data source.
+### Using a simple statistic, with no data source
 
 ``` r
 counter <- Counter()
@@ -217,7 +217,7 @@ as.list(counter@state)
     ## $n
     ## [1] 3
 
-## Using a simple statistic, with a local data source.
+### Using a simple statistic, with a local data source
 
 ``` r
 reset(stream)

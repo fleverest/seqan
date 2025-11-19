@@ -33,7 +33,7 @@ get_length(src)
 str(src)
 ```
 
-## Using a stream.
+### Using a stream
 
 ```{r}
 stream <- Stream(source = src, transform_record = function(x) x + 1)
@@ -52,7 +52,7 @@ stream
 as.list(stream@state)
 ```
 
-## Using a simple statistic, with no data source.
+### Using a simple statistic, with no data source
 
 ```{r}
 counter <- Counter()
@@ -85,7 +85,7 @@ str(counter)
 as.list(counter@state)
 ```
 
-## Using a simple statistic, with a local data source.
+### Using a simple statistic, with a local data source
 
 ```{r}
 reset(stream)
