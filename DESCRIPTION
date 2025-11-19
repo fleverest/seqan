@@ -2,8 +2,8 @@ Package: seqan
 Title:  Tools for online sequential analysis in R
 Version: 0.0.0.9000
 Authors@R: c(person("Floyd", "Everest", , "floyd.everest@monash.edu", role = c("aut", "cre")),
-             person("Damjan", "Vukcevic", , "damjan.vukcevic@monash.edu", role = c("aut", "cre")),
-             person("Cynthia", "Huang", , "cynthia.huang@monash.edu", role = c("aut", "cre")))
+             person("Damjan", "Vukcevic", , "damjan.vukcevic@monash.edu", role = c("aut")),
+             person("Cynthia", "Huang", , "cynthia.huang@monash.edu", role = c("aut")))
 Description: Provides a neat extensible interface for performing online sequential
     analysis tasks in R. Includes implementations for a number tasks such as computing
     confidence sequences, sequential hypothesis testing and sequential estimation.
