@@ -100,3 +100,85 @@ S7::method(get_length, VectorSource) <- function(source, ...) {
   # Get the data vector and return its length
   length(get(source@x, envir = source@env, inherits = FALSE))
 }
+
+
+#' Source lines of data from a text file
+#'
+#' @description
+#' Reads numeric data from a text file, one value per line. Efficiently reads
+#' only the lines needed rather than reading the entire file each time.
+#'
+#' @field filepath Character path to the file
+#'
+#' @export
+TextFileSource <- S7::new_class("TextFileSource",
+  parent = Source,
+  properties = list(
+    filepath = S7::class_character
+  ),
+  constructor = function(filepath) {
+    # Validate file exists
+    if (!file.exists(filepath)) {
+      stop(sprintf("File does not exist: %s", filepath))
+    }
+    
+    S7::new_object(
+      S7::S7_object(),
+      description = sprintf("File '%s'", basename(filepath)),
+      filepath = filepath
+    )
+  }
+)
+
+#' @export
+S7::method(get_length, TextFileSource) <- function(source, ...) {
+  con <- file(source@filepath, "r")
+  on.exit(close(con), add = TRUE)
+  all_lines <- readLines(con)
+  length(all_lines)
+}
+
+#' @export
+S7::method(get_n, TextFileSource) <- function(source, n, from, ...) {
+  # Read specific lines from file
+  con <- file(source@filepath, "r")
+  on.exit(close(con))
+  
+  # Read all lines up to what we need
+  all_lines <- readLines(con)
+  total_length <- length(all_lines)
+  
+  # Validate from
+  if (from < 1L || from > total_length) {
+    stop(sprintf("'from' must be between 1 and %d, got %d", total_length, from))
+  }
+  
+  # Calculate range
+  to <- min(from + n - 1L, total_length)
+  
+  # Select the requested lines
+  all_lines[from:to]
+}
+
+#' @export
+S7::method(get_rest, TextFileSource) <- function(source, from, ...) {
+  # Read from position to end
+  con <- file(source@filepath, "r")
+  on.exit(close(con))
+  
+  all_lines <- readLines(con)
+  total_length <- length(all_lines)
+  
+  # Validate from
+  if (from < 1L) {
+    stop(sprintf("'from' must be positive, got %d", from))
+  }
+  
+  # If from is past end, return empty
+  if (from > total_length) {
+    return(numeric(0))
+  }
+  
+  # Select requested lines
+  all_lines[from:total_length]
+}
