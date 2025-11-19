@@ -173,25 +173,29 @@ S7::method(reset, Stream) <- function(object, ...) {
 Stat <- S7::new_class("Stat",
   properties = list(
     stream = S7::class_any,  # Optional Stream object, NULL if direct feed
-    description = S7::class_character
+    description = S7::class_character,
+    state = S7::class_environment
   ),
   abstract = TRUE,
   constructor = function(stream = NULL, description = "Sequential Statistic") {
     S7::new_object(
       S7::S7_object(),
       stream = stream,
-      description = description
+      description = description,
+      state = new.env(parent = emptyenv())
     )
   }
 )
 
 #' Update a Stat with new data
 #'
-#' @param object A Stat object
+#' @param stat A Stat object
 #' @param ... Additional arguments (e.g., new_data to feed new data directly)
 #' @return Result/decision after update (implementation-dependent)
 #' @export
-update <- S7::new_generic("update", "object")
+update <- S7::new_generic("update", "stat", function(stat, ...) {
+  S7::S7_dispatch()
+})
 
 #' Check if procedure has stopped
 #'
@@ -200,23 +204,13 @@ update <- S7::new_generic("update", "object")
 #' @export
 is_stopped <- S7::new_generic("is_stopped", "stat")
 
-#' Validate index is within bounds
-#'
-#' @keywords internal
-validate_index <- function(idx, max_length, arg_name = "index") {
-  if (idx < 1L || idx > max_length) {
-    stop(sprintf("%s must be between 1 and %d, got %d", 
-                 arg_name, max_length, idx))
-  }
-  invisible(TRUE)
-}
 
-#' Validate n is positive
-#'
-#' @keywords internal
-validate_n <- function(n, arg_name = "n") {
-  if (n < 1L) {
-    stop(sprintf("%s must be positive, got %d", arg_name, n))
-  }
-  invisible(TRUE)
-}
+#' Get the statistic value(s)
+#' 
+#' @param stat A Stat object
+#' @param n Number of historical values to retrieve
+#' @return The value(s) taken by the statistic
+#' @export
+value <- S7::new_generic("value", "stat", function(stat, n = 1L, ...) {
+  S7::S7_dispatch()
+})
