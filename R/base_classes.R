@@ -55,12 +55,11 @@ get_length <- S7::new_generic("get_length", "source", function(source, ...) {
 })
 
 
-#' Data Stream Abstract Base Class
+#' Data Stream Class
 #'
 #' @description
-#' Abstract base class for data streams. A Stream manages the flow of data
-#' from a Source to a Stat, maintaining state about position and optionally
-#' transforming records.
+#' Class for data streams. A Stream manages the flow of data from a Source to a
+#' Stat, maintaining state about position and optionally transforming records.
 #'
 #' @details
 #' A Stream:
@@ -72,21 +71,32 @@ get_length <- S7::new_generic("get_length", "source", function(source, ...) {
 #' - `fetch(stream)`: Fetch new records, transform, and update position state
 #' - `reset(stream)`: Reset stream state to initial position
 #'
+#' @examples
+#' 
+#' x <- c(0, 1, 0, 0, 1, 1)
+#' src <- VectorSource(x)
+#' stream <- Stream(source = src, transform_record = function(x) x + 1)
+#' fetch(stream) # Returns c(1, 2, 1, 1, 2, 2)
+#' fetch(stream) # Returns numeric(0) since no new data
+#' x <- c(x, 0, 1)
+#' fetch(stream) # Returns c(1, 2)
+#' 
 #' @export
 Stream <- S7::new_class("Stream",
   properties = list(
-    source = S7::class_any,  # Will be Source when defined, using class_any for now
-    current_idx = S7::class_integer,
-    transform_record = S7::class_function,  # Function to transform each record
+    source = Source,  # Will be Source when defined, using class_any for now
+    transform_records = S7::class_function,  # Function to transform each record
     state = S7::class_environment # For tracking internal state (index, etc)
   ),
-  abstract = TRUE,
-  constructor = function(source, current_idx = 1L, transform_record = identity) {
+  constructor = function(source, current_idx = 1L, transform_records = identity) {
+    state <- new.env(parent = emptyenv())
+    state$current_idx <- current_idx
+
     S7::new_object(
       S7::S7_object(),
       source = source,
-      current_idx = current_idx,
-      transform_record = transform_record
+      transform_records = transform_records,
+      state = state
     )
   }
 )
@@ -96,15 +106,46 @@ Stream <- S7::new_class("Stream",
 #' @param stream A Stream object
 #' @return Transformed records fetched from the stream's current position
 #' @export
-fetch <- S7::new_generic("fetch", "stream")
+fetch <- S7::new_generic("fetch", "stream", function(stream, ...) {
+  S7::S7_dispatch()
+})
+
+#' @export
+S7::method(fetch, Stream) <- function(stream, ...) {
+  # Get current position
+  current_idx <- stream@state$current_idx
+  
+  # Check if we're past the end of the source
+  source_length <- get_length(stream@source)
+  if (current_idx > source_length) {
+    return(numeric(0))  # Or appropriate empty vector type
+  }
+  
+  # Get all remaining data from source
+  raw_data <- get_rest(stream@source, from = current_idx)
+
+  # Update state to reflect we've consumed this data
+  stream@state$current_idx <- source_length + 1L
+
+  # Transform and return
+  stream@transform_records(raw_data)
+}
 
 #' Reset object to initial state
 #'
 #' @param object A Stream or Stat object
 #' @return The object (invisibly), with state reset
 #' @export
-reset <- S7::new_generic("reset", "object")
+reset <- S7::new_generic("reset", "object", function(object, ...) {
+  S7::S7_dispatch()
+})
 
+#' @export
+S7::method(reset, Stream) <- function(object, ...) {
+  # Reset stream position to beginning
+  object@state$current_idx <- 1L
+  invisible(object)
+}
 
 #' Sequential Statistic/Procedure Abstract Base Class
 #'

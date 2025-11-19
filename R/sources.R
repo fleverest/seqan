@@ -58,8 +58,13 @@ S7::method(get_n, VectorSource) <- function(source, from, n, ...) {
   
   # Validate from index
   total_length <- length(data)
-  if (from < 1L || from > total_length) {
-    stop(sprintf("'from' must be between 1 and %d, got %d", total_length, from))
+  if (from < 1L) {
+    stop(sprintf("'from' must be positive, got %d", from))
+  }
+  
+  # If from is past the end, return empty vector
+  if (from > total_length) {
+    return(data[integer(0)])  # Returns empty vector of same type as data
   }
   
   # Validate n
