@@ -10,6 +10,13 @@ Tools for online sequential analysis in R.
 remotes::install_github("fleverest/seqan")
 ```
 
+## Acknowledgements
+
+This package was developed during the 2025 NUMBAT Hackathon. We thank
+[Monash NUMBATs](https://numbat.space/) and [Monash
+EBS](https://www.monash.edu/business/ebs) for organising the event and
+providing resources that enabled collaborative development.
+
 ## Demos and examples
 
 ### Using a local vector as a data source
