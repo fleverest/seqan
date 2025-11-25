@@ -43,7 +43,7 @@ str(src)
     ## <seqan::VectorSource>
     ##  @ description: chr "Vector 'x'"
     ##  @ x          : chr "x"
-    ##  @ env        :<environment: 0x56095da1e200>
+    ##  @ env        :<environment: 0x55ad91287620>
 
 ### Using a stream
 
@@ -57,9 +57,9 @@ stream
     ##  @ source           : <seqan::VectorSource>
     ##  .. @ description: chr "Vector 'x'"
     ##  .. @ x          : chr "x"
-    ##  .. @ env        :<environment: 0x56095da1e200> 
+    ##  .. @ env        :<environment: 0x55ad91287620> 
     ##  @ transform_records: function (x)  
-    ##  @ state            :<environment: 0x56095d30d588>
+    ##  @ state            :<environment: 0x55ad90b559d8>
 
 ``` r
 as.list(stream@state)
@@ -96,9 +96,9 @@ stream
     ##  @ source           : <seqan::VectorSource>
     ##  .. @ description: chr "Vector 'x'"
     ##  .. @ x          : chr "x"
-    ##  .. @ env        :<environment: 0x56095da1e200> 
+    ##  .. @ env        :<environment: 0x55ad91287620> 
     ##  @ transform_records: function (x)  
-    ##  @ state            :<environment: 0x56095d30d588>
+    ##  @ state            :<environment: 0x55ad90b559d8>
 
 ``` r
 as.list(stream@state)
@@ -118,7 +118,7 @@ counter
     ## <seqan::Counter>
     ##  @ stream     : NULL
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095dc331e0>
+    ##  @ state      :<environment: 0x55ad90f4e3b8>
 
 ``` r
 value(counter)
@@ -135,7 +135,7 @@ counter
     ## <seqan::Counter>
     ##  @ stream     : NULL
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095dc331e0>
+    ##  @ state      :<environment: 0x55ad90f4e3b8>
 
 ``` r
 value(counter)  # current value
@@ -202,7 +202,7 @@ str(counter)
     ## <seqan::Counter>
     ##  @ stream     : NULL
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095dc331e0>
+    ##  @ state      :<environment: 0x55ad90f4e3b8>
 
 ``` r
 as.list(counter@state)
@@ -232,11 +232,11 @@ counter2
     ##  .. @ source           : <seqan::VectorSource>
     ##  .. .. @ description: chr "Vector 'x'"
     ##  .. .. @ x          : chr "x"
-    ##  .. .. @ env        :<environment: 0x56095da1e200> 
+    ##  .. .. @ env        :<environment: 0x55ad91287620> 
     ##  .. @ transform_records: function (x)  
-    ##  .. @ state            :<environment: 0x56095d30d588> 
+    ##  .. @ state            :<environment: 0x55ad90b559d8> 
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095fec73f0>
+    ##  @ state      :<environment: 0x55ad908c1e38>
 
 ``` r
 update(counter2)
@@ -249,11 +249,11 @@ counter2
     ##  .. @ source           : <seqan::VectorSource>
     ##  .. .. @ description: chr "Vector 'x'"
     ##  .. .. @ x          : chr "x"
-    ##  .. .. @ env        :<environment: 0x56095da1e200> 
+    ##  .. .. @ env        :<environment: 0x55ad91287620> 
     ##  .. @ transform_records: function (x)  
-    ##  .. @ state            :<environment: 0x56095d30d588> 
+    ##  .. @ state            :<environment: 0x55ad90b559d8> 
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095fec73f0>
+    ##  @ state      :<environment: 0x55ad908c1e38>
 
 ``` r
 value(counter2)
@@ -273,14 +273,21 @@ counter2
     ##  .. @ source           : <seqan::VectorSource>
     ##  .. .. @ description: chr "Vector 'x'"
     ##  .. .. @ x          : chr "x"
-    ##  .. .. @ env        :<environment: 0x56095da1e200> 
+    ##  .. .. @ env        :<environment: 0x55ad91287620> 
     ##  .. @ transform_records: function (x)  
-    ##  .. @ state            :<environment: 0x56095d30d588> 
+    ##  .. @ state            :<environment: 0x55ad90b559d8> 
     ##  @ description: chr "Data point counter"
-    ##  @ state      :<environment: 0x56095fec73f0>
+    ##  @ state      :<environment: 0x55ad908c1e38>
 
 ``` r
 value(counter2)
 ```
 
     ## [1] 9
+
+## Acknowledgements
+
+This package was developed during the 2025 NUMBAT Hackathon. We thank
+[Monash NUMBATs](https://numbat.space/) and [Monash
+EBS](https://www.monash.edu/business/ebs) for organising the event and
+providing resources that enabled collaborative development.
