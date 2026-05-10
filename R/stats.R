@@ -20,7 +20,6 @@ Counter <- S7::new_class("Counter",
   constructor = function(stream = NULL) {
     state <- new.env(parent = emptyenv())
     state$n <- 0L
-    state$ns <- integer(0)
     S7::new_object(
       S7::S7_object(),
       stream = stream,
