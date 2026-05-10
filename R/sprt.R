@@ -95,12 +95,11 @@ SPRT <- S7::new_class("SPRT",
 
 #' @export
 S7::method(update, SPRT) <- function(stat, new_x = NULL, ...) {
-  # If already stopped, notify the user and continue to update, but decision won't change
   was_stopped <- is_stopped(stat)
   if (was_stopped) {
     message("SPRT has already stopped. Use reset() to restart.")
   }
-  
+
   # If no new_x provided, fetch from stream
   if (is.null(new_x)) {
     if (is.null(stat@stream)) {
@@ -108,37 +107,34 @@ S7::method(update, SPRT) <- function(stat, new_x = NULL, ...) {
     }
     new_x <- fetch(stat@stream)
   }
-  
-  # If no new data, return
+
   if (length(new_x) == 0) {
     return(invisible(stat))
   }
-  
-  # Compute cumulative log-likelihood ratios for new observations
+
   new_llrs <- vapply(new_x, stat@log_likelihood_ratio_fn, numeric(1))
-  
-  # Update cumulative LLR
   new_cumulative_llrs <- cumsum(new_llrs) + stat@state$llr
-  if (decision(stat) == "continue" && any(new_cumulative_llrs >= stat@upper_threshold | 
-                                        new_cumulative_llrs <= stat@lower_threshold)) {
-    message("SPRT stopping condition met.")
-  }
+
   stat@state$llr_history <- c(stat@state$llr_history, new_cumulative_llrs)
   stat@state$llr <- stat@state$llr + sum(new_llrs)
   stat@state$n <- stat@state$n + length(new_x)
-  
-  # Check decision boundaries
-  if (was_stopped) {
-    return(invisible(stat))  # Do not change decision if already stopped
+
+  if (!was_stopped) {
+    crossed <- which(
+      new_cumulative_llrs >= stat@upper_threshold |
+      new_cumulative_llrs <= stat@lower_threshold
+    )
+    if (length(crossed) > 0) {
+      first_crossing_llr <- new_cumulative_llrs[crossed[1]]
+      if (first_crossing_llr >= stat@upper_threshold) {
+        stat@state$decision <- "reject_H0"
+      } else {
+        stat@state$decision <- "accept_H0"
+      }
+      message("SPRT stopping condition met.")
+    }
   }
-  if (stat@state$llr >= stat@upper_threshold) {
-    stat@state$decision <- "reject_H0"
-  } else if (stat@state$llr <= stat@lower_threshold) {
-    stat@state$decision <- "accept_H0"
-  } else {
-    stat@state$decision <- "continue"
-  }
-  
+
   invisible(stat)
 }
 
