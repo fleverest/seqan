@@ -89,6 +89,6 @@ S7::method(value, Counter) <- function(stat, n = 1L, ...) {
 }
 
 #' @export
-S7::method(n, Counter) <- function(stat, ...) {
+S7::method(n_obs, Counter) <- function(stat, ...) {
   stat@state$n
 }

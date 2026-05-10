@@ -44,6 +44,7 @@
 #' value(sprt)  # Current LLR
 #' decision(sprt)  # Check decision
 #' is_stopped(sprt)  # Check if decision made
+#' stopping_time(sprt)  # Check when decision was made
 #' 
 #' @export
 SPRT <- S7::new_class("SPRT",
@@ -76,8 +77,9 @@ SPRT <- S7::new_class("SPRT",
     state <- new.env(parent = emptyenv())
     state$llr <- 0  # Current log-likelihood ratio
     state$llr_history <- numeric(0)  # History of LLR values
-    state$n <- 0L  # Number of observations
-    state$decision <- "continue"  # Current decision: "accept_H0", "reject_H0", or "continue"
+    state$n <- 0L
+    state$stopping_time <- NA_integer_
+    state$decision <- "continue"
     
     S7::new_object(
       S7::S7_object(),
@@ -114,6 +116,7 @@ S7::method(update, SPRT) <- function(stat, new_x = NULL, ...) {
 
   new_llrs <- vapply(new_x, stat@log_likelihood_ratio_fn, numeric(1))
   new_cumulative_llrs <- cumsum(new_llrs) + stat@state$llr
+  old_n <- stat@state$n
 
   stat@state$llr_history <- c(stat@state$llr_history, new_cumulative_llrs)
   stat@state$llr <- stat@state$llr + sum(new_llrs)
@@ -131,6 +134,7 @@ S7::method(update, SPRT) <- function(stat, new_x = NULL, ...) {
       } else {
         stat@state$decision <- "accept_H0"
       }
+      stat@state$stopping_time <- old_n + crossed[1]
       message("SPRT stopping condition met.")
     }
   }
@@ -144,6 +148,7 @@ S7::method(reset, SPRT) <- function(object, ...) {
   object@state$llr <- 0
   object@state$llr_history <- numeric(0)
   object@state$n <- 0L
+  object@state$stopping_time <- NA_integer_
   object@state$decision <- "continue"
   
   # Reset stream if attached
@@ -168,6 +173,7 @@ S7::method(decision, SPRT) <- function(test, ...) {
 S7::method(print, SPRT) <- function(x, ...) {
   cat("Sequential Probability Ratio Test\n")
   cat("Number of observations:", x@state$n, "\n")
+  if (is_stopped(x)) cat("Stopping time:", x@state$stopping_time, "\n")
   cat("Current LLR:", round(x@state$llr, 4), "\n")
   cat("Decision boundaries: [", round(x@lower_threshold, 4), ",", 
       round(x@upper_threshold, 4), "]\n")
@@ -191,6 +197,11 @@ S7::method(value, SPRT) <- function(stat, n = 1L, ...) {
 }
 
 #' @export
-S7::method(n, SPRT) <- function(stat, ...) {
+S7::method(n_obs, SPRT) <- function(stat, ...) {
   stat@state$n
+}
+
+#' @export
+S7::method(stopping_time, SPRT) <- function(test, ...) {
+  test@state$stopping_time
 }

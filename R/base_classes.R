@@ -213,7 +213,7 @@ value <- S7::new_generic("value", "stat", function(stat, n = 1L, ...) {
 #' @param stat A Stat object
 #' @return Integer count of data points processed
 #' @export
-n <- S7::new_generic("n", "stat", function(stat, ...) {
+n_obs <- S7::new_generic("n_obs", "stat", function(stat, ...) {
   S7::S7_dispatch()
 })
 
@@ -250,5 +250,15 @@ Test <- S7::new_class("Test",
 #'   or "Accept" (accept the null hypothesis)
 #' @export
 decision <- S7::new_generic("decision", "test", function(test, ...) {
+  S7::S7_dispatch()
+})
+
+#' Get the stopping time of a sequential test
+#'
+#' @param test A Test object
+#' @return Integer giving the number of observations processed when the test
+#'   stopped, or \code{NA} if the test has not yet stopped
+#' @export
+stopping_time <- S7::new_generic("stopping_time", "test", function(test, ...) {
   S7::S7_dispatch()
 })
