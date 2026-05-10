@@ -84,7 +84,7 @@ get_length <- S7::new_generic("get_length", "source", function(source, ...) {
 #' @export
 Stream <- S7::new_class("Stream",
   properties = list(
-    source = Source,  # Will be Source when defined, using class_any for now
+    source = Source,
     transform_records = S7::class_function,  # Function to transform each record
     state = S7::class_environment # For tracking internal state (index, etc)
   ),
