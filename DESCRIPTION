@@ -1,5 +1,5 @@
 Package: seqan
-Title:  Tools for online sequential analysis in R
+Title: Tools for online sequential analysis in R
 Version: 0.0.0.9000
 Authors@R: c(person("Floyd", "Everest", , "floyd.everest@monash.edu", role = c("aut", "cre")),
              person("Damjan", "Vukcevic", , "damjan.vukcevic@monash.edu", role = c("aut")),
@@ -10,6 +10,6 @@ Description: Provides a neat extensible interface for performing online sequenti
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports:
     S7
+Config/roxygen2/version: 8.0.0
